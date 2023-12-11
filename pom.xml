@@ -8,6 +8,20 @@
     <groupId>io.github.awesome-java-web</groupId>
     <artifactId>groovy-script-executor</artifactId>
     <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>groovy-script-executor</name>
+    <description>A simple groovy script executor for java (web) projects</description>
+
+    <developers>
+        <developer>
+            <name>codeboyzhou</name>
+            <email>imzhouchen@gmail.com</email>
+            <organization>awesome-java-web</organization>
+            <organizationUrl>https://github.com/awesome-java-web</organizationUrl>
+            <url>https://github.com/awesome-java-web/groovy-script-executor</url>
+        </developer>
+    </developers>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,6 +37,7 @@
         <spockframework.version>2.4-M1-groovy-4.0</spockframework.version>
         <!--============================ plugins version management ========================-->
         <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
     </properties>
 
     <dependencies>
@@ -68,6 +83,21 @@
 
     <build>
         <plugins>
+            <!-- generate source code jar file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- compile and run spock unit test code in groovy language -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
