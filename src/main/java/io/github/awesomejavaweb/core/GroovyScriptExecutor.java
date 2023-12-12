@@ -11,19 +11,19 @@ public class GroovyScriptExecutor {
 
     private static final GroovyClassLoader GROOVY_CLASS_LOADER = new GroovyClassLoader();
 
-    public Object execute(final String script, final String function, final Object... parameters) {
-        if (script == null || script.trim().isEmpty()) {
+    public Object execute(final String classScript, final String function, final Object... parameters) {
+        if (classScript == null || classScript.trim().isEmpty()) {
             throw new InvalidGroovyScriptException("Groovy script is null or empty");
         }
 
         // Find groovy object from cache first
-        final String trimmedScript = script.trim();
+        final String trimmedScript = classScript.trim();
         final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
         GroovyObject groovyObjectCache = GroovyObjectCacheManager.getIfPresent(scriptCacheKey);
 
         // Parse the script and put it into cache instantly if it is not in cache
         if (groovyObjectCache == null) {
-            groovyObjectCache = parseScript(trimmedScript);
+            groovyObjectCache = parseClassScript(trimmedScript);
             GroovyObjectCacheManager.put(scriptCacheKey, groovyObjectCache);
         }
 
@@ -31,9 +31,9 @@ public class GroovyScriptExecutor {
         return invokeMethod(groovyObjectCache, function, parameters);
     }
 
-    private GroovyObject parseScript(final String script) {
+    private GroovyObject parseClassScript(final String classScript) {
         try {
-            Class<?> scriptClass = GROOVY_CLASS_LOADER.parseClass(script);
+            Class<?> scriptClass = GROOVY_CLASS_LOADER.parseClass(classScript);
             return (GroovyObject) scriptClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new GroovyScriptParseException("Failed to parse groovy script, the nested exception is: " + e.getMessage());
