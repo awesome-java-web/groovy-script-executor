@@ -4,9 +4,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Md5Utils {
+public final class Md5Utils {
 
     private static final String MESSAGE_DIGEST_ALGORITHM_MD5 = "MD5";
+
+    public Md5Utils() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
 
     public static byte[] md5(String input) {
         try {

@@ -11,6 +11,15 @@ import java.security.NoSuchAlgorithmException
 
 class Md5UtilsTest extends Specification {
 
+    def "test new constructor"() {
+        when:
+        new Md5Utils()
+
+        then:
+        Exception exception = thrown(UnsupportedOperationException)
+        exception instanceof UnsupportedOperationException && exception.message == "Utility class should not be instantiated"
+    }
+
     @Unroll
     def "test md5Hex, input = #input, result = #result"() {
         given:
