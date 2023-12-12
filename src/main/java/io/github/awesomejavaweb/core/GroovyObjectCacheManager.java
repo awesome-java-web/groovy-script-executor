@@ -6,7 +6,11 @@ import groovy.lang.GroovyObject;
 
 import java.time.Duration;
 
-public class GroovyObjectCacheManager {
+public final class GroovyObjectCacheManager {
+
+    public GroovyObjectCacheManager() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
 
     private static final Cache<String, GroovyObject> CACHE = Caffeine.newBuilder()
         .expireAfterAccess(Duration.ofDays(1))
