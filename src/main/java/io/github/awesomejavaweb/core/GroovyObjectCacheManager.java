@@ -18,18 +18,23 @@ public final class GroovyObjectCacheManager {
         DEFAULT_CACHE = Caffeine.newBuilder().initialCapacity(1).maximumSize(10).expireAfterAccess(Duration.ofDays(1)).build();
     }
 
-    private static Cache<String, GroovyObject> customCache;
+    private static Caffeine<String, GroovyObject> customCacheBuilder;
 
-    public static void useCustomCache(Cache<String, GroovyObject> customCache) {
-        GroovyObjectCacheManager.customCache = customCache;
+    public static void useCustomCacheBuilder(Caffeine<String, GroovyObject> customCacheBuilder) {
+        GroovyObjectCacheManager.customCacheBuilder = customCacheBuilder;
+    }
+
+    public static Caffeine<String, GroovyObject> getCustomCacheBuilder() {
+        return customCacheBuilder;
     }
 
     public static GroovyObject getIfPresent(String key) {
-        return customCache == null ? DEFAULT_CACHE.getIfPresent(key) : customCache.getIfPresent(key);
+        Cache<String, GroovyObject> cache = customCacheBuilder == null ? DEFAULT_CACHE : customCacheBuilder.build();
+        return cache.getIfPresent(key);
     }
 
     public static void put(String key, GroovyObject groovyObject) {
-        Cache<String, GroovyObject> cache = customCache == null ? DEFAULT_CACHE : customCache;
+        Cache<String, GroovyObject> cache = customCacheBuilder == null ? DEFAULT_CACHE : customCacheBuilder.build();
         cache.put(key, groovyObject);
     }
 
