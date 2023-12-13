@@ -7,9 +7,9 @@ import io.github.awesomejavaweb.exception.GroovyScriptParseException;
 import io.github.awesomejavaweb.exception.InvalidGroovyScriptException;
 import io.github.awesomejavaweb.util.Md5Utils;
 
-public class GroovyScriptExecutor {
+import java.io.IOException;
 
-    private static final GroovyClassLoader GROOVY_CLASS_LOADER = new GroovyClassLoader();
+public class GroovyScriptExecutor {
 
     public Object execute(final String classScript, final String function, final Object... parameters) {
         if (classScript == null || classScript.trim().isEmpty()) {
@@ -32,10 +32,10 @@ public class GroovyScriptExecutor {
     }
 
     private GroovyObject parseClassScript(final String classScript) {
-        try {
-            Class<?> scriptClass = GROOVY_CLASS_LOADER.parseClass(classScript);
+        try (GroovyClassLoader groovyClassLoader = new GroovyClassLoader()) {
+            Class<?> scriptClass = groovyClassLoader.parseClass(classScript);
             return (GroovyObject) scriptClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (IOException | InstantiationException | IllegalAccessException e) {
             throw new GroovyScriptParseException("Failed to parse groovy script, the nested exception is: " + e.getMessage());
         }
     }
