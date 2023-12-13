@@ -15,11 +15,10 @@ class GroovyScriptExecutorTest extends Specification {
 
     String testScriptFilePath = "src/test/resources"
 
+    GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
+
     @Unroll
     def "test execute empty script: #expectedMessage"() {
-        given:
-        GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
-
         when:
         groovyScriptExecutor.execute(script, _ as String, _ as String)
 
@@ -45,11 +44,12 @@ class GroovyScriptExecutorTest extends Specification {
     @Unroll
     def "test execute success, script = #scriptFileName, function = #function, parameters = #parameters, result = #result"() {
         given:
-        GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
+
+        when:
         def executeReturn = groovyScriptExecutor.execute(script, function, parameters)
 
-        expect:
+        then:
         executeReturn == result
 
         where:
@@ -62,7 +62,6 @@ class GroovyScriptExecutorTest extends Specification {
     def "test parseScript catch InstantiationException | IllegalAccessException"() {
         given:
         final String scriptFileName = "TestInstantiationException.groovy"
-        GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
         when:
