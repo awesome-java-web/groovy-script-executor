@@ -1,6 +1,8 @@
 package io.github.awesomejavaweb
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import io.github.awesomejavaweb.common.Strings
+import io.github.awesomejavaweb.core.GroovyObjectCacheManager
 import io.github.awesomejavaweb.core.GroovyScriptExecutor
 import io.github.awesomejavaweb.exception.GroovyObjectInvokeMethodException
 import io.github.awesomejavaweb.exception.GroovyScriptParseException
@@ -16,6 +18,10 @@ class GroovyScriptExecutorTest extends Specification {
     String testScriptFilePath = "src/test/resources"
 
     GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
+
+    def setupSpec() {
+        GroovyObjectCacheManager.useCustomCacheBuilder(Caffeine.newBuilder() as Caffeine<String, GroovyObject>)
+    }
 
     @Unroll
     def "test execute empty script: #expectedMessage"() {
