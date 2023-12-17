@@ -18,10 +18,6 @@ public class GroovyScriptExecutor {
         return new GroovyScriptExecutor();
     }
 
-    public GroovyScriptExecutor() {
-        this.localCacheManager = LocalCacheManager.newBuilder().useDefaultCache();
-    }
-
     public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
         this.localCacheManager = localCacheManager;
         return this;
