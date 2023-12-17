@@ -1,4 +1,4 @@
-package io.github.awesomejavaweb.exception;
+package com.github.awesome.scripting.groovy.exception;
 
 public class GroovyObjectInvokeMethodException extends RuntimeException {
 

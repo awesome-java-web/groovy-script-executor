@@ -1,15 +1,31 @@
-package io.github.awesomejavaweb.core;
+package com.github.awesome.scripting.groovy;
 
+import com.github.awesome.scripting.groovy.cache.LocalCacheManager;
+import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException;
+import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException;
+import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException;
+import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
-import io.github.awesomejavaweb.exception.GroovyObjectInvokeMethodException;
-import io.github.awesomejavaweb.exception.GroovyScriptParseException;
-import io.github.awesomejavaweb.exception.InvalidGroovyScriptException;
-import io.github.awesomejavaweb.util.Md5Utils;
 
 import java.io.IOException;
 
 public class GroovyScriptExecutor {
+
+    private LocalCacheManager localCacheManager;
+
+    public static GroovyScriptExecutor newBuilder() {
+        return new GroovyScriptExecutor();
+    }
+
+    public GroovyScriptExecutor() {
+        this.localCacheManager = LocalCacheManager.newBuilder().useDefaultCache();
+    }
+
+    public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
+        this.localCacheManager = localCacheManager;
+        return this;
+    }
 
     public Object execute(final String classScript, final String function, final Object... parameters) {
         if (classScript == null || classScript.trim().isEmpty()) {
@@ -19,12 +35,12 @@ public class GroovyScriptExecutor {
         // Find groovy object from cache first
         final String trimmedScript = classScript.trim();
         final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
-        GroovyObject groovyObjectCache = GroovyObjectCacheManager.getIfPresent(scriptCacheKey);
+        GroovyObject groovyObjectCache = this.localCacheManager.getIfPresent(scriptCacheKey);
 
         // Parse the script and put it into cache instantly if it is not in cache
         if (groovyObjectCache == null) {
             groovyObjectCache = parseClassScript(trimmedScript);
-            GroovyObjectCacheManager.put(scriptCacheKey, groovyObjectCache);
+            this.localCacheManager.put(scriptCacheKey, groovyObjectCache);
         }
 
         // Script is parsed successfully

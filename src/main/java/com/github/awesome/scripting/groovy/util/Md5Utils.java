@@ -1,4 +1,4 @@
-package io.github.awesomejavaweb.util;
+package com.github.awesome.scripting.groovy.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

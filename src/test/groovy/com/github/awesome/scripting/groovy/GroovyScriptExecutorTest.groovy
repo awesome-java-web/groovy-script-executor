@@ -1,12 +1,14 @@
-package io.github.awesomejavaweb
+package com.github.awesome.scripting.groovy
 
+import com.github.awesome.scripting.groovy.cache.CaffeineLocalCache
+import com.github.awesome.scripting.groovy.cache.GuavaLocalCache
+import com.github.awesome.scripting.groovy.cache.LocalCacheManager
+import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException
+import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException
+import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException
 import com.github.benmanes.caffeine.cache.Caffeine
-import io.github.awesomejavaweb.common.Strings
-import io.github.awesomejavaweb.core.GroovyObjectCacheManager
-import io.github.awesomejavaweb.core.GroovyScriptExecutor
-import io.github.awesomejavaweb.exception.GroovyObjectInvokeMethodException
-import io.github.awesomejavaweb.exception.GroovyScriptParseException
-import io.github.awesomejavaweb.exception.InvalidGroovyScriptException
+import com.google.common.cache.CacheBuilder
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -15,12 +17,25 @@ import java.nio.file.Paths
 
 class GroovyScriptExecutorTest extends Specification {
 
+    @Shared
+    GuavaLocalCache guava
+
+    @Shared
+    CaffeineLocalCache caffeine
+
+    @Shared
+    LocalCacheManager localCacheManager
+
+    @Shared
+    GroovyScriptExecutor groovyScriptExecutor
+
     String testScriptFilePath = "src/test/resources"
 
-    GroovyScriptExecutor groovyScriptExecutor = new GroovyScriptExecutor()
-
     def setupSpec() {
-        GroovyObjectCacheManager.useCustomCacheBuilder(Caffeine.newBuilder() as Caffeine<String, GroovyObject>)
+        localCacheManager = LocalCacheManager.newBuilder()
+        groovyScriptExecutor = GroovyScriptExecutor.newBuilder()
+        guava = new GuavaLocalCache(CacheBuilder.newBuilder().build())
+        caffeine = new CaffeineLocalCache(Caffeine.newBuilder().build())
     }
 
     @Unroll
@@ -50,6 +65,8 @@ class GroovyScriptExecutorTest extends Specification {
     @Unroll
     def "test execute success, script = #scriptFileName, function = #function, parameters = #parameters, result = #result"() {
         given:
+        localCacheManager.use(cacheFramework)
+        groovyScriptExecutor.withCacheManager(localCacheManager)
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
         when:
@@ -57,12 +74,13 @@ class GroovyScriptExecutorTest extends Specification {
 
         then:
         executeReturn == result
+        localCacheManager.stats()
 
         where:
-        scriptFileName                    | function                      | parameters | result
-        "TestGroovyScriptExecutor.groovy" | "testInvokeMethodNoArgs"      | null       | 2147483647
-        "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithArgs"    | 10240      | 1048576000
-        "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithTwoArgs" | [2, 31]    | 2147483647
+        cacheFramework | scriptFileName                    | function                      | parameters | result
+        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodNoArgs"      | null       | 2147483647
+        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithArgs"    | 10240      | 1048576000
+        caffeine       | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithTwoArgs" | [2, 31]    | 2147483647
     }
 
     def "test parseScript catch InstantiationException | IllegalAccessException"() {

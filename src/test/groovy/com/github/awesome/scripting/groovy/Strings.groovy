@@ -1,4 +1,4 @@
-package io.github.awesomejavaweb.common
+package com.github.awesome.scripting.groovy
 
 class Strings {
 
