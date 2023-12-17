@@ -40,6 +40,10 @@ class GroovyScriptExecutorTest extends Specification {
 
     @Unroll
     def "test execute empty script: #expectedMessage"() {
+        given:
+        localCacheManager.useDefaultCache()
+        groovyScriptExecutor.withCacheManager(localCacheManager)
+
         when:
         groovyScriptExecutor.execute(script, _ as String, _ as String)
 
@@ -85,6 +89,8 @@ class GroovyScriptExecutorTest extends Specification {
 
     def "test parseScript catch InstantiationException | IllegalAccessException"() {
         given:
+        localCacheManager.useDefaultCache()
+        groovyScriptExecutor.withCacheManager(localCacheManager)
         final String scriptFileName = "TestInstantiationException.groovy"
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
