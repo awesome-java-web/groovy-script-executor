@@ -10,6 +10,17 @@ Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执
     <artifactId>groovy-script-executor</artifactId>
     <version>0.1.0</version>
 </dependency>
+<!-- 本地缓存框架，具体根据使用情况，想用哪个框架就引入对应的依赖，如果不想自定义缓存框架的配置，默认框架请使用caffeine -->
+<dependency>
+    <groupId>com.github.ben-manes.caffeine</groupId>
+    <artifactId>caffeine</artifactId>
+    <version>${caffeine.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>${guava.version}</version>
+</dependency>
 ```
 - 第二步：请参考以下示例代码
 ``` java
@@ -35,7 +46,8 @@ public class GroovyScriptExecutorSample {
         GroovyScriptExecutorSample sample = new GroovyScriptExecutorSample();
         // 解析测试用的Groovy代码，具体代码参见如下链接
         // https://github.com/awesome-java-web/groovy-script-executor/blob/main/src/test/resources/TestGroovyScriptExecutor.groovy
-        byte[] bytes = Files.readAllBytes(Paths.get("src/test/resources/TestGroovyScriptExecutor.groovy"));
+        Path path = Paths.get("src/test/resources/TestGroovyScriptExecutor.groovy");
+        byte[] bytes = Files.readAllBytes(path);
         final String classScript = new String(bytes);
         Object result = sample.groovyScriptExecutor.execute(classScript, "testInvokeMethodNoArgs");
         System.out.println(result); // 这里将会输出2147483647
