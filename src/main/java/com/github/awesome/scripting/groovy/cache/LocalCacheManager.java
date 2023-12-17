@@ -24,6 +24,7 @@ public class LocalCacheManager implements LocalCache {
                 .initialCapacity(1)
                 .maximumSize(10)
                 .expireAfterAccess(Duration.ofDays(1))
+                .recordStats()
                 .build();
         this.localCache = new CaffeineLocalCache(defaultCache);
         return this;

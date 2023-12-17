@@ -27,6 +27,10 @@ public class GroovyScriptExecutor {
         return this;
     }
 
+    public LocalCacheManager getCacheManager() {
+        return localCacheManager;
+    }
+
     public Object execute(final String classScript, final String function, final Object... parameters) {
         if (classScript == null || classScript.trim().isEmpty()) {
             throw new InvalidGroovyScriptException("Groovy script is null or empty");

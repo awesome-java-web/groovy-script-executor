@@ -74,7 +74,7 @@ class GroovyScriptExecutorTest extends Specification {
 
         then:
         executeReturn == result
-        localCacheManager.stats()
+        groovyScriptExecutor.getCacheManager().stats()
 
         where:
         cacheFramework | scriptFileName                    | function                      | parameters | result
