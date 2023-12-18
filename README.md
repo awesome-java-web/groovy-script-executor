@@ -49,7 +49,14 @@ public class GroovyScriptExecutorSample {
         Path path = Paths.get("src/test/resources/TestGroovyScriptExecutor.groovy");
         byte[] bytes = Files.readAllBytes(path);
         final String classScript = new String(bytes);
+        // 调用不带参数的Groovy方法
         Object result = sample.groovyScriptExecutor.execute(classScript, "testInvokeMethodNoArgs");
+        System.out.println(result); // 这里将会输出2147483647
+        // 调用带单个参数的Groovy方法
+        result = sample.groovyScriptExecutor.execute(classScript, "testInvokeMethodWithArgs", 10240);
+        System.out.println(result); // 这里将会输出1048576000
+        // 调用带多个参数的Groovy方法
+        result = sample.groovyScriptExecutor.execute(classScript, "testInvokeMethodWithTwoArgs", 2, 31);
         System.out.println(result); // 这里将会输出2147483647
     }
 
