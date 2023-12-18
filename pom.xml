@@ -7,11 +7,20 @@
 
     <groupId>io.github.awesome-java-web</groupId>
     <artifactId>groovy-script-executor</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>groovy-script-executor</name>
+    <url>https://github.com/awesome-java-web/groovy-script-executor</url>
     <description>A simple groovy script executor for java (web) projects</description>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
@@ -19,9 +28,14 @@
             <email>imzhouchen@gmail.com</email>
             <organization>awesome-java-web</organization>
             <organizationUrl>https://github.com/awesome-java-web</organizationUrl>
-            <url>https://github.com/awesome-java-web/groovy-script-executor</url>
         </developer>
     </developers>
+
+    <scm>
+        <url>https://github.com/awesome-java-web/groovy-script-executor</url>
+        <connection>https://github.com/awesome-java-web/groovy-script-executor.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:awesome-java-web/groovy-script-executor.git</developerConnection>
+    </scm>
 
     <properties>
         <java.version>1.8</java.version>
@@ -33,14 +47,15 @@
         <junit.version>5.9.0</junit.version>
         <groovy.version>4.0.6</groovy.version>
         <mockito.version>3.12.4</mockito.version>
+        <guava.version>32.1.3-jre</guava.version>
         <caffeine.version>2.9.3</caffeine.version>
         <spockframework.version>2.4-M1-groovy-4.0</spockframework.version>
         <!--============================ plugins version management ========================-->
-        <guava.version>32.1.3-jre</guava.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <gmavenplus-plugin.version>3.0.2</gmavenplus-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     </properties>
 
@@ -117,6 +132,20 @@
                     <execution>
                         <goals>
                             <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
