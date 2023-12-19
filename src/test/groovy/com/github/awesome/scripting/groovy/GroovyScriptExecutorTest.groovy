@@ -49,20 +49,16 @@ class GroovyScriptExecutorTest extends Specification {
 
         then:
         Exception exception = thrown(expectedException)
-        if (exception instanceof InvalidGroovyScriptException) {
-            exception.message == expectedMessage
-        } else if (exception instanceof GroovyScriptParseException) {
-            exception.message.contains(expectedMessage)
-        }
+        exception.message == expectedMessage || exception.message.contains(expectedMessage)
 
         where:
         script                    | expectedException                 | expectedMessage
-        null                      | InvalidGroovyScriptException      | "Groovy script is null or empty"
-        Strings.EMPTY             | InvalidGroovyScriptException      | "Groovy script is null or empty"
-        Strings.SPACE             | InvalidGroovyScriptException      | "Groovy script is null or empty"
-        Strings.TAB               | InvalidGroovyScriptException      | "Groovy script is null or empty"
-        Strings.LF                | InvalidGroovyScriptException      | "Groovy script is null or empty"
-        Strings.CRLF              | InvalidGroovyScriptException      | "Groovy script is null or empty"
+        null                      | InvalidGroovyScriptException      | "Groovy script is null"
+        Strings.EMPTY             | InvalidGroovyScriptException      | "Groovy script is empty"
+        Strings.SPACE             | InvalidGroovyScriptException      | "Groovy script is empty"
+        Strings.TAB               | InvalidGroovyScriptException      | "Groovy script is empty"
+        Strings.LF                | InvalidGroovyScriptException      | "Groovy script is empty"
+        Strings.CRLF              | InvalidGroovyScriptException      | "Groovy script is empty"
         "This is not groovy code" | GroovyObjectInvokeMethodException | "Failed to invoke groovy method"
     }
 

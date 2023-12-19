@@ -28,12 +28,16 @@ public class GroovyScriptExecutor {
     }
 
     public Object execute(final String classScript, final String function, final Object... parameters) {
-        if (classScript == null || classScript.trim().isEmpty()) {
-            throw new InvalidGroovyScriptException("Groovy script is null or empty");
+        if (classScript == null ) {
+            throw new InvalidGroovyScriptException("Groovy script is null");
+        }
+
+        final String trimmedScript = classScript.trim();
+        if (trimmedScript.isEmpty()) {
+            throw new InvalidGroovyScriptException("Groovy script is empty");
         }
 
         // Find groovy object from cache first
-        final String trimmedScript = classScript.trim();
         final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
         GroovyObject groovyObjectCache = this.localCacheManager.getIfPresent(scriptCacheKey);
 
