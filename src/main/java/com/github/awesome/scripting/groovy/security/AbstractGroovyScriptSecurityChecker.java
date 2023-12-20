@@ -15,8 +15,8 @@ public abstract class AbstractGroovyScriptSecurityChecker implements GroovyScrip
         for (String keyword : keywords) {
             if (script.contains(keyword)) {
                 final String errorMessage = String.format(
-                    "Groovy script contains potentially unsafe keyword: '%s', please notice the following keywords are all considered unsafe: %s",
-                    keyword, keywords
+                    "Groovy script contains potentially unsafe keyword: '%s', %s, please notice the following keywords are all considered unsafe: %s",
+                    keyword, DefaultShouldInterceptKeywords.fromKeyword(keyword), keywords
                 );
                 throw new GroovyScriptSecurityException(errorMessage);
             }
