@@ -4,6 +4,8 @@ import com.github.awesome.scripting.groovy.cache.LocalCacheManager;
 import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException;
 import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException;
 import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException;
+import com.github.awesome.scripting.groovy.security.DefaultGroovyScriptSecurityChecker;
+import com.github.awesome.scripting.groovy.security.GroovyScriptSecurityChecker;
 import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
@@ -14,12 +16,23 @@ public class GroovyScriptExecutor {
 
     private LocalCacheManager localCacheManager;
 
+    private GroovyScriptSecurityChecker groovyScriptSecurityChecker;
+
     public static GroovyScriptExecutor newBuilder() {
         return new GroovyScriptExecutor();
     }
 
+    public GroovyScriptExecutor() {
+        this.groovyScriptSecurityChecker = new DefaultGroovyScriptSecurityChecker();
+    }
+
     public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
         this.localCacheManager = localCacheManager;
+        return this;
+    }
+
+    public GroovyScriptExecutor withSecurityChecker(GroovyScriptSecurityChecker groovyScriptSecurityChecker) {
+        this.groovyScriptSecurityChecker = groovyScriptSecurityChecker;
         return this;
     }
 
@@ -28,7 +41,7 @@ public class GroovyScriptExecutor {
     }
 
     public Object execute(final String classScript, final String function, final Object... parameters) {
-        if (classScript == null ) {
+        if (classScript == null) {
             throw new InvalidGroovyScriptException("Groovy script is null");
         }
 
@@ -36,6 +49,9 @@ public class GroovyScriptExecutor {
         if (trimmedScript.isEmpty()) {
             throw new InvalidGroovyScriptException("Groovy script is empty");
         }
+
+        // Check if the script contains any unsafe keywords
+        this.groovyScriptSecurityChecker.checkOrThrow(trimmedScript);
 
         // Find groovy object from cache first
         final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
