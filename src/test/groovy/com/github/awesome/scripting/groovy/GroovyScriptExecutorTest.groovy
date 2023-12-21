@@ -5,7 +5,9 @@ import com.github.awesome.scripting.groovy.cache.GuavaLocalCache
 import com.github.awesome.scripting.groovy.cache.LocalCacheManager
 import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException
 import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException
+import com.github.awesome.scripting.groovy.exception.GroovyScriptSecurityException
 import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException
+import com.github.awesome.scripting.groovy.security.DefaultGroovyScriptSecurityChecker
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.common.cache.CacheBuilder
 import spock.lang.Shared
@@ -39,10 +41,10 @@ class GroovyScriptExecutorTest extends Specification {
     }
 
     @Unroll
-    def "test execute empty script: #expectedMessage"() {
+    def "test execute empty or unsafe script: #expectedMessage"() {
         given:
         localCacheManager.useDefaultCache()
-        groovyScriptExecutor.withCacheManager(localCacheManager)
+        groovyScriptExecutor.withCacheManager(localCacheManager).withSecurityChecker(new DefaultGroovyScriptSecurityChecker())
 
         when:
         groovyScriptExecutor.execute(script, _ as String, _ as String)
@@ -60,6 +62,7 @@ class GroovyScriptExecutorTest extends Specification {
         Strings.LF                | InvalidGroovyScriptException      | "Groovy script is empty"
         Strings.CRLF              | InvalidGroovyScriptException      | "Groovy script is empty"
         "This is not groovy code" | GroovyObjectInvokeMethodException | "Failed to invoke groovy method"
+        "Test System.gc() invoke" | GroovyScriptSecurityException     | "Groovy script contains potentially unsafe keyword"
     }
 
     @Unroll
