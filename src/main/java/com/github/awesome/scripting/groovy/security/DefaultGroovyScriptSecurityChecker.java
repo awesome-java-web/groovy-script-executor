@@ -18,9 +18,6 @@ public class DefaultGroovyScriptSecurityChecker implements GroovyScriptSecurityC
     @Override
     public void checkOrThrow(String script) {
         Collection<String> keywords = shouldInterceptKeywords();
-        if (keywords == null || keywords.isEmpty()) {
-            return;
-        }
         for (String keyword : keywords) {
             if (script.contains(keyword)) {
                 final String errorMessage = String.format(
