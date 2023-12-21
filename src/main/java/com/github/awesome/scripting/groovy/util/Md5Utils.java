@@ -8,7 +8,7 @@ public final class Md5Utils {
 
     private static final String MESSAGE_DIGEST_ALGORITHM_MD5 = "MD5";
 
-    public Md5Utils() {
+    private Md5Utils() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
