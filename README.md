@@ -1,11 +1,13 @@
 <h1 align="center">
     <p>Groovy Script Executor</p>
-    <img alt="Static Badge" src="https://img.shields.io/badge/requirement-java 8 or higher-blue">
+    <img alt="Static Badge" src="https://img.shields.io/badge/license-MIT-red">
+    <img alt="Static Badge" src="https://img.shields.io/badge/JDK-8+-blue">
     <img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.awesome-java-web/groovy-script-executor?color=blue">
     <img alt="GitHub last commit (by committer)" src="https://img.shields.io/github/last-commit/awesome-java-web/groovy-script-executor?color=blue">
     <img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/awesome-java-web/groovy-script-executor/maven.yml">
     <img alt="Codecov" src="https://img.shields.io/codecov/c/github/awesome-java-web/groovy-script-executor?color=brightgreen">
 </h1>
+
 Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执行 Groovy 代码。它轻量化，体积小，方便快速集成和使用，一行代码即可实现调用，支持动态传入 Groovy 方法名称和参数，随意调用并得到返回结果。它内部已经处理了```GroovyObject```对象的缓存问题，避免频繁使用```GroovyClassLoader```加载脚本生成对象时出现内存泄漏。缓存框架支持```Guava```和```Caffeine```，你也可以实现内部接口拓展自己想用的缓存框架。
 
 # 快速开始
