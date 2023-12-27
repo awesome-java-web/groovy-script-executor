@@ -8,7 +8,7 @@
     <img alt="Codecov" src="https://img.shields.io/codecov/c/github/awesome-java-web/groovy-script-executor?color=brightgreen">
 </h1>
 
-Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执行 Groovy 代码。它轻量化，体积小，方便快速集成和使用，一行代码即可实现调用，支持动态传入 Groovy 方法名称和参数，随意调用并得到返回结果。它内部已经处理了```GroovyObject```对象的缓存问题，避免频繁使用```GroovyClassLoader```加载脚本生成对象时出现内存泄漏。缓存框架支持```Guava```和```Caffeine```，你也可以实现内部接口拓展自己想用的缓存框架。
+Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执行 Groovy 代码。它轻量化，体积小，方便快速集成和使用，一行代码即可实现调用，支持动态传入 Groovy 方法名称和参数，随意调用并得到返回结果。它内部已经处理了`GroovyObject`对象的缓存问题，避免频繁使用`GroovyClassLoader`加载脚本生成对象时出现内存泄漏。缓存框架支持`Guava`和`Caffeine`，你也可以实现内部接口拓展自己想用的缓存框架。
 
 # 快速开始
 以下介绍假定你正在使用 Maven 构建系统并且正在使用 Java 8 或者更高的 Java 版本。
