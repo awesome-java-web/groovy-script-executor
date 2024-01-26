@@ -1,0 +1,5 @@
+# Normalize line endings to LF.
+* text eol=lf
+
+# Groovy code is just for unit testing, so it should not be recognized as the main language in the repository.
+*.groovy linguist-language=Java
