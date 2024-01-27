@@ -7,7 +7,7 @@
 
     <groupId>io.github.awesome-java-web</groupId>
     <artifactId>groovy-script-executor</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>groovy-script-executor</name>
