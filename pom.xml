@@ -49,6 +49,7 @@
         <mockito.version>3.12.4</mockito.version>
         <guava.version>32.1.3-jre</guava.version>
         <caffeine.version>2.9.3</caffeine.version>
+        <groovy-sandbox.version>1.19</groovy-sandbox.version>
         <spockframework.version>2.4-M1-groovy-4.0</spockframework.version>
         <!--============================ plugins version management ========================-->
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
@@ -67,6 +68,11 @@
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>groovy-sandbox</artifactId>
+            <version>${groovy-sandbox.version}</version>
         </dependency>
         <!-- local cache framework -->
         <dependency>

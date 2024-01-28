@@ -4,6 +4,7 @@ import com.github.awesome.scripting.groovy.cache.LocalCacheManager;
 import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException;
 import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException;
 import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException;
+import com.github.awesome.scripting.groovy.support.GroovyCompilerConfigurationSupport;
 import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
@@ -15,6 +16,7 @@ public class GroovyScriptExecutor {
     private LocalCacheManager localCacheManager;
 
     public static GroovyScriptExecutor newBuilder() {
+        GroovyCompilerConfigurationSupport.initialize();
         return new GroovyScriptExecutor();
     }
 
