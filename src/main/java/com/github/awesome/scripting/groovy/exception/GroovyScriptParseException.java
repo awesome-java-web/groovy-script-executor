@@ -2,8 +2,8 @@ package com.github.awesome.scripting.groovy.exception;
 
 public class GroovyScriptParseException extends RuntimeException {
 
-    public GroovyScriptParseException(String message) {
-        super(message);
+    public GroovyScriptParseException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

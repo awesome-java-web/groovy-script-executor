@@ -98,4 +98,25 @@ class GroovyScriptExecutorTest extends Specification {
         exception.message.contains("Failed to parse groovy script")
     }
 
+    @Unroll
+    def "test sandbox interceptor, method = #method"() {
+        given:
+        localCacheManager.useDefaultCache()
+        groovyScriptExecutor.withCacheManager(localCacheManager)
+        final String scriptFileName = "TestSandboxInterceptor.groovy"
+        String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
+
+        when:
+        groovyScriptExecutor.execute(script, method, null)
+
+        then:
+        Exception exception = thrown(GroovyObjectInvokeMethodException)
+        exception.message.contains("Failed to invoke groovy method")
+        exception.message.contains("not allowed in your groovy code")
+        System.err.println(exception.message)
+
+        where:
+        method << ["testSystemGC", "testSystemExit", "testSystemRunFinalization", "testRuntimeClass"]
+    }
+
 }

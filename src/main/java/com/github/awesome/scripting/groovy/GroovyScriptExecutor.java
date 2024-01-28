@@ -4,20 +4,25 @@ import com.github.awesome.scripting.groovy.cache.LocalCacheManager;
 import com.github.awesome.scripting.groovy.exception.GroovyObjectInvokeMethodException;
 import com.github.awesome.scripting.groovy.exception.GroovyScriptParseException;
 import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptException;
-import com.github.awesome.scripting.groovy.support.GroovyCompilerConfigurationSupport;
 import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.IOException;
 
 public class GroovyScriptExecutor {
 
+    private final GroovyScriptCompiler groovyScriptCompiler;
+
     private LocalCacheManager localCacheManager;
 
     public static GroovyScriptExecutor newBuilder() {
-        GroovyCompilerConfigurationSupport.initialize();
         return new GroovyScriptExecutor();
+    }
+
+    public GroovyScriptExecutor() {
+        this.groovyScriptCompiler = GroovyScriptCompiler.initialize();
     }
 
     public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
@@ -50,11 +55,14 @@ public class GroovyScriptExecutor {
     }
 
     private GroovyObject parseClassScript(final String classScript) {
-        try (GroovyClassLoader groovyClassLoader = new GroovyClassLoader()) {
+        ClassLoader currentClassLoader = getClass().getClassLoader();
+        CompilerConfiguration configuration = this.groovyScriptCompiler.getConfiguration();
+        try (GroovyClassLoader groovyClassLoader = new GroovyClassLoader(currentClassLoader, configuration)) {
             Class<?> scriptClass = groovyClassLoader.parseClass(classScript);
             return (GroovyObject) scriptClass.newInstance();
         } catch (IOException | InstantiationException | IllegalAccessException e) {
-            throw new GroovyScriptParseException("Failed to parse groovy script, the nested exception is: " + e.getMessage());
+            final String errorMessage = String.format("Failed to parse groovy script, nested exception is %s", e);
+            throw new GroovyScriptParseException(errorMessage, e);
         }
     }
 
@@ -62,8 +70,8 @@ public class GroovyScriptExecutor {
         try {
             return groovyObject.invokeMethod(function, parameters);
         } catch (Exception e) {
-            final String errorMessage = String.format("Failed to invoke groovy method '%s', the nested exception is: %s", function, e.getMessage());
-            throw new GroovyObjectInvokeMethodException(errorMessage);
+            final String errorMessage = String.format("Failed to invoke groovy method '%s', nested exception is %s", function, e);
+            throw new GroovyObjectInvokeMethodException(errorMessage, e);
         }
     }
 

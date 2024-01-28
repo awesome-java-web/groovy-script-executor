@@ -1,19 +1,23 @@
-package com.github.awesome.scripting.groovy.support;
+package com.github.awesome.scripting.groovy;
 
 import com.github.awesome.scripting.groovy.security.RuntimeClassInterceptor;
 import com.github.awesome.scripting.groovy.security.SystemClassInterceptor;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
-public class GroovyCompilerConfigurationSupport {
+public class GroovyScriptCompiler {
 
     private final CompilerConfiguration configuration;
 
-    public static void initialize() {
-        new GroovyCompilerConfigurationSupport();
+    public static GroovyScriptCompiler initialize() {
+        return new GroovyScriptCompiler();
     }
 
-    public GroovyCompilerConfigurationSupport() {
+    public CompilerConfiguration getConfiguration() {
+        return this.configuration;
+    }
+
+    public GroovyScriptCompiler() {
         this.configuration = new CompilerConfiguration();
         this.addCompilationCustomizers();
         this.registerSecurityInterceptor();
