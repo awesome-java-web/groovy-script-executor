@@ -34,15 +34,15 @@ class GroovyScriptExecutorTest extends Specification {
     def setupSpec() {
         localCacheManager = LocalCacheManager.newBuilder()
         groovyScriptExecutor = GroovyScriptExecutor.newBuilder()
-        guava = new GuavaLocalCache(CacheBuilder.newBuilder().build())
-        caffeine = new CaffeineLocalCache(Caffeine.newBuilder().build())
+        guava = new GuavaLocalCache(CacheBuilder.newBuilder().recordStats().build())
+        caffeine = new CaffeineLocalCache(Caffeine.newBuilder().recordStats().build())
     }
 
     @Unroll
     def "test execute empty or error script: #expectedMessage"() {
         given:
         localCacheManager.useDefaultCache()
-        groovyScriptExecutor.withCacheManager(localCacheManager)
+        groovyScriptExecutor.with(localCacheManager)
 
         when:
         groovyScriptExecutor.execute(script, _ as String, _ as String)
@@ -67,7 +67,7 @@ class GroovyScriptExecutorTest extends Specification {
     def "test execute success, script = #scriptFileName, function = #function, parameters = #parameters, result = #result"() {
         given:
         localCacheManager.use(cacheFramework)
-        groovyScriptExecutor.withCacheManager(localCacheManager)
+        groovyScriptExecutor.with(localCacheManager)
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
         when:
@@ -75,7 +75,8 @@ class GroovyScriptExecutorTest extends Specification {
 
         then:
         executeReturn == result
-        groovyScriptExecutor.getCacheManager().stats()
+        String stats = groovyScriptExecutor.getLocalCacheManager().stats()
+        println(stats)
 
         where:
         cacheFramework | scriptFileName                    | function                      | parameters | result
@@ -87,7 +88,7 @@ class GroovyScriptExecutorTest extends Specification {
     def "test parseScript catch InstantiationException | IllegalAccessException"() {
         given:
         localCacheManager.useDefaultCache()
-        groovyScriptExecutor.withCacheManager(localCacheManager)
+        groovyScriptExecutor.with(localCacheManager)
         final String scriptFileName = "TestInstantiationException.groovy"
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
@@ -104,7 +105,7 @@ class GroovyScriptExecutorTest extends Specification {
     def "test sandbox interceptor, method = #method"() {
         given:
         localCacheManager.useDefaultCache()
-        groovyScriptExecutor.withCacheManager(localCacheManager)
+        groovyScriptExecutor.with(localCacheManager)
         final String scriptFileName = "TestSandboxInterceptor.groovy"
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 

@@ -23,6 +23,7 @@ public class GroovyScriptExecutor {
 
     public GroovyScriptExecutor() {
         this.groovyScriptCompiler = GroovyScriptCompiler.asDefault();
+        this.localCacheManager = LocalCacheManager.newBuilder().useDefaultCache();
     }
 
     public GroovyScriptExecutor with(GroovyScriptCompiler groovyScriptCompiler) {
@@ -30,12 +31,12 @@ public class GroovyScriptExecutor {
         return this;
     }
 
-    public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
+    public GroovyScriptExecutor with(LocalCacheManager localCacheManager) {
         this.localCacheManager = localCacheManager;
         return this;
     }
 
-    public LocalCacheManager getCacheManager() {
+    public LocalCacheManager getLocalCacheManager() {
         return localCacheManager;
     }
 
