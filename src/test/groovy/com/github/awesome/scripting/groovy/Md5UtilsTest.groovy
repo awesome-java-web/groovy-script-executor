@@ -18,6 +18,7 @@ class Md5UtilsTest extends Specification {
         then:
         Exception exception = thrown(UnsupportedOperationException)
         exception instanceof UnsupportedOperationException && exception.message == "Utility class should not be instantiated"
+        System.err.println(exception.message)
     }
 
     def "test md5 catch NoSuchAlgorithmException"() {

@@ -61,7 +61,7 @@ public class GroovyScriptExecutor {
             Class<?> scriptClass = groovyClassLoader.parseClass(classScript);
             return (GroovyObject) scriptClass.newInstance();
         } catch (IOException | InstantiationException | IllegalAccessException e) {
-            final String errorMessage = String.format("Failed to parse groovy script, nested exception is %s", e);
+            final String errorMessage = String.format("Failed to parse groovy class script, nested exception is %s", e);
             throw new GroovyScriptParseException(errorMessage, e);
         }
     }

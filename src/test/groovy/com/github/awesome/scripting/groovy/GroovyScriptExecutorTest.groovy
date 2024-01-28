@@ -39,7 +39,7 @@ class GroovyScriptExecutorTest extends Specification {
     }
 
     @Unroll
-    def "test execute empty script: #expectedMessage"() {
+    def "test execute empty or error script: #expectedMessage"() {
         given:
         localCacheManager.useDefaultCache()
         groovyScriptExecutor.withCacheManager(localCacheManager)
@@ -50,6 +50,7 @@ class GroovyScriptExecutorTest extends Specification {
         then:
         Exception exception = thrown(expectedException)
         exception.message == expectedMessage || exception.message.contains(expectedMessage)
+        System.err.println(exception.message)
 
         where:
         script                    | expectedException                 | expectedMessage
@@ -95,7 +96,8 @@ class GroovyScriptExecutorTest extends Specification {
 
         then:
         Exception exception = thrown(GroovyScriptParseException)
-        exception.message.contains("Failed to parse groovy script")
+        exception.message.contains("Failed to parse groovy class script")
+        System.err.println(exception.message)
     }
 
     @Unroll

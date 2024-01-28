@@ -23,6 +23,7 @@ class SystemClassInterceptorTest extends Specification {
         then:
         SecurityException exception = thrown(SecurityException)
         exception.message == "System." + method + "() is not allowed in your groovy code."
+        System.err.println(exception.message)
 
         where:
         method << ["gc", "exit", "runFinalization"]

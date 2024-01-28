@@ -23,6 +23,7 @@ class RuntimeClassInterceptorTest extends Specification {
         then:
         SecurityException exception = thrown(SecurityException)
         exception.message == "Runtime." + method + "() is not allowed in your groovy code."
+        System.err.println(exception.message)
 
         where:
         method << ["getRuntime", "exit", "addShutdownHook"]
