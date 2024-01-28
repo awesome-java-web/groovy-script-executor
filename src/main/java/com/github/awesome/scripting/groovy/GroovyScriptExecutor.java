@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class GroovyScriptExecutor {
 
-    private final GroovyScriptCompiler groovyScriptCompiler;
+    private GroovyScriptCompiler groovyScriptCompiler;
 
     private LocalCacheManager localCacheManager;
 
@@ -22,7 +22,12 @@ public class GroovyScriptExecutor {
     }
 
     public GroovyScriptExecutor() {
-        this.groovyScriptCompiler = GroovyScriptCompiler.initialize();
+        this.groovyScriptCompiler = GroovyScriptCompiler.asDefault();
+    }
+
+    public GroovyScriptExecutor with(GroovyScriptCompiler groovyScriptCompiler) {
+        this.groovyScriptCompiler = groovyScriptCompiler;
+        return this;
     }
 
     public GroovyScriptExecutor withCacheManager(LocalCacheManager localCacheManager) {
