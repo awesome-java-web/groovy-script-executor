@@ -8,7 +8,6 @@ import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import groovy.lang.GroovyShell;
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.IOException;
@@ -97,12 +96,7 @@ public class GroovyScriptExecutor {
     private GroovyObject parseScriptSnippet(final String scriptText) {
         CompilerConfiguration configuration = this.groovyScriptCompiler.getConfiguration();
         GroovyShell groovyShell = new GroovyShell(configuration);
-        try {
-            return groovyShell.parse(scriptText);
-        } catch (CompilationFailedException e) {
-            final String errorMessage = String.format("Failed to parse groovy script snippet, nested exception is %s", e);
-            throw new GroovyScriptParseException(errorMessage, e);
-        }
+        return groovyShell.parse(scriptText);
     }
 
     private Object invokeMethod(GroovyObject groovyObject, String function, Object... parameters) {

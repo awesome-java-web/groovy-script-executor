@@ -33,13 +33,13 @@ class GroovyScriptExecutorTest extends Specification {
 
     def setupSpec() {
         localCacheManager = LocalCacheManager.newBuilder()
-        groovyScriptExecutor = GroovyScriptExecutor.newBuilder()
         guava = new GuavaLocalCache(CacheBuilder.newBuilder().recordStats().build())
         caffeine = new CaffeineLocalCache(Caffeine.newBuilder().recordStats().build())
+        groovyScriptExecutor = GroovyScriptExecutor.newBuilder().with(GroovyScriptCompiler.asDefault())
     }
 
     @Unroll
-    def "test execute empty or error script: #expectedMessage"() {
+    def "test execute/evaluate empty or error script: #expectedMessage"() {
         given:
         localCacheManager.useDefaultCache()
         groovyScriptExecutor.with(localCacheManager)
@@ -48,9 +48,17 @@ class GroovyScriptExecutorTest extends Specification {
         groovyScriptExecutor.execute(script, _ as String, _ as String)
 
         then:
-        Exception exception = thrown(expectedException)
-        exception.message == expectedMessage || exception.message.contains(expectedMessage)
-        System.err.println(exception.message)
+        Exception executeException = thrown(expectedException)
+        executeException.message == expectedMessage || executeException.message.contains(expectedMessage)
+        System.err.println(executeException.message)
+
+        when:
+        groovyScriptExecutor.evaluate(script, _ as String, _ as String)
+
+        then:
+        Exception evaluateException = thrown(expectedException)
+        evaluateException.message == expectedMessage || evaluateException.message.contains(expectedMessage)
+        System.err.println(evaluateException.message)
 
         where:
         script                    | expectedException                 | expectedMessage
@@ -64,28 +72,47 @@ class GroovyScriptExecutorTest extends Specification {
     }
 
     @Unroll
-    def "test execute success, script = #scriptFileName, function = #function, parameters = #parameters, result = #result"() {
+    def "test execute success, script = #scriptFileName, function = #function, parameters = #parameters, result = #expected"() {
         given:
         localCacheManager.use(cacheFramework)
         groovyScriptExecutor.with(localCacheManager)
         String script = new String(Files.readAllBytes(Paths.get(testScriptFilePath, scriptFileName)))
 
         when:
-        def executeReturn = groovyScriptExecutor.execute(script, function, parameters)
+        def result = groovyScriptExecutor.execute(script, function, parameters)
 
         then:
-        executeReturn == result
+        result == expected
         String stats = groovyScriptExecutor.getLocalCacheManager().stats()
         println(stats)
 
         where:
-        cacheFramework | scriptFileName                    | function                      | parameters   | result
+        cacheFramework | scriptFileName                    | function                      | parameters   | expected
         guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodNoArgs"      | null         | 1024
         guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithArgs"    | 1024         | 1025
         caffeine       | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithTwoArgs" | [1024, 1024] | 2048
     }
 
-    def "test parseScript catch InstantiationException | IllegalAccessException"() {
+    @Unroll
+    def "test evaluate, script = #scriptText, function = #function, parameters = #parameters, result = #expected"() {
+        given:
+        localCacheManager.useDefaultCache()
+        groovyScriptExecutor.with(localCacheManager)
+
+        when:
+        def result = groovyScriptExecutor.evaluate(scriptText, function, parameters)
+
+        then:
+        result == expected
+
+        where:
+        scriptText                                                   | function                  | parameters   | expected
+        "def testEvaluateNoArgs() { return 1024 }"                   | "testEvaluateNoArgs"      | null         | 1024
+        "def testEvaluateWithArgs(int a) { return a + 1 }"           | "testEvaluateWithArgs"    | 1024         | 1025
+        "def testEvaluateWithTwoArgs(int a, int b) { return a + b }" | "testEvaluateWithTwoArgs" | [1024, 1024] | 2048
+    }
+
+    def "test parseClassScript catch InstantiationException | IllegalAccessException"() {
         given:
         localCacheManager.useDefaultCache()
         groovyScriptExecutor.with(localCacheManager)
