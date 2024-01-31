@@ -7,6 +7,8 @@ import com.github.awesome.scripting.groovy.exception.InvalidGroovyScriptExceptio
 import com.github.awesome.scripting.groovy.util.Md5Utils;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+import groovy.lang.GroovyShell;
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.IOException;
@@ -60,6 +62,26 @@ public class GroovyScriptExecutor {
         return invokeMethod(groovyObjectCache, function, parameters);
     }
 
+    public Object evaluate(final String scriptText, final String function, final Object... parameters) {
+        if (scriptText == null || scriptText.trim().isEmpty()) {
+            throw new InvalidGroovyScriptException("Groovy script is null or empty");
+        }
+
+        // Find groovy object from cache first
+        final String trimmedScript = scriptText.trim();
+        final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
+        GroovyObject groovyObjectCache = this.localCacheManager.getIfPresent(scriptCacheKey);
+
+        // Parse the script and put it into cache instantly if it is not in cache
+        if (groovyObjectCache == null) {
+            groovyObjectCache = parseScriptSnippet(trimmedScript);
+            this.localCacheManager.put(scriptCacheKey, groovyObjectCache);
+        }
+
+        // Script is parsed successfully
+        return invokeMethod(groovyObjectCache, function, parameters);
+    }
+
     private GroovyObject parseClassScript(final String classScript) {
         ClassLoader currentClassLoader = getClass().getClassLoader();
         CompilerConfiguration configuration = this.groovyScriptCompiler.getConfiguration();
@@ -68,6 +90,17 @@ public class GroovyScriptExecutor {
             return (GroovyObject) scriptClass.newInstance();
         } catch (IOException | InstantiationException | IllegalAccessException e) {
             final String errorMessage = String.format("Failed to parse groovy class script, nested exception is %s", e);
+            throw new GroovyScriptParseException(errorMessage, e);
+        }
+    }
+
+    private GroovyObject parseScriptSnippet(final String scriptText) {
+        CompilerConfiguration configuration = this.groovyScriptCompiler.getConfiguration();
+        GroovyShell groovyShell = new GroovyShell(configuration);
+        try {
+            return groovyShell.parse(scriptText);
+        } catch (CompilationFailedException e) {
+            final String errorMessage = String.format("Failed to parse groovy script snippet, nested exception is %s", e);
             throw new GroovyScriptParseException(errorMessage, e);
         }
     }

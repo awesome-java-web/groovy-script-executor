@@ -79,10 +79,10 @@ class GroovyScriptExecutorTest extends Specification {
         println(stats)
 
         where:
-        cacheFramework | scriptFileName                    | function                      | parameters | result
-        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodNoArgs"      | null       | 2147483647
-        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithArgs"    | 10240      | 1048576000
-        caffeine       | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithTwoArgs" | [2, 31]    | 2147483647
+        cacheFramework | scriptFileName                    | function                      | parameters   | result
+        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodNoArgs"      | null         | 1024
+        guava          | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithArgs"    | 1024         | 1025
+        caffeine       | "TestGroovyScriptExecutor.groovy" | "testInvokeMethodWithTwoArgs" | [1024, 1024] | 2048
     }
 
     def "test parseScript catch InstantiationException | IllegalAccessException"() {
