@@ -10,6 +10,7 @@ import groovy.lang.GroovyObject;
 import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class GroovyScriptExecutor {
@@ -42,17 +43,11 @@ public class GroovyScriptExecutor {
     }
 
     public Object execute(final String classScript, final String function, final Object... parameters) {
-        if (classScript == null || classScript.trim().isEmpty()) {
-            throw new InvalidGroovyScriptException("Groovy script is null or empty");
-        }
-
-        // Find groovy object from cache first
-        final String trimmedScript = classScript.trim();
-        final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
-        GroovyObject groovyObjectCache = this.localCacheManager.getIfPresent(scriptCacheKey);
-
         // Parse the script and put it into cache instantly if it is not in cache
+        GroovyObject groovyObjectCache = this.getGroovyObjectCacheFromScript(classScript);
         if (groovyObjectCache == null) {
+            final String trimmedScript = classScript.trim();
+            final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
             groovyObjectCache = parseClassScript(trimmedScript);
             this.localCacheManager.put(scriptCacheKey, groovyObjectCache);
         }
@@ -62,23 +57,32 @@ public class GroovyScriptExecutor {
     }
 
     public Object evaluate(final String scriptText, final String function, final Object... parameters) {
-        if (scriptText == null || scriptText.trim().isEmpty()) {
-            throw new InvalidGroovyScriptException("Groovy script is null or empty");
-        }
-
-        // Find groovy object from cache first
-        final String trimmedScript = scriptText.trim();
-        final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
-        GroovyObject groovyObjectCache = this.localCacheManager.getIfPresent(scriptCacheKey);
-
         // Parse the script and put it into cache instantly if it is not in cache
+        GroovyObject groovyObjectCache = this.getGroovyObjectCacheFromScript(scriptText);
         if (groovyObjectCache == null) {
+            final String trimmedScript = scriptText.trim();
+            final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
             groovyObjectCache = parseScriptSnippet(trimmedScript);
             this.localCacheManager.put(scriptCacheKey, groovyObjectCache);
         }
 
         // Script is parsed successfully
         return invokeMethod(groovyObjectCache, function, parameters);
+    }
+
+    @Nullable
+    private GroovyObject getGroovyObjectCacheFromScript(final String scriptText) {
+        if (scriptText == null) {
+            throw new InvalidGroovyScriptException("Groovy script is null");
+        }
+
+        final String trimmedScript = scriptText.trim();
+        if (trimmedScript.isEmpty()) {
+            throw new InvalidGroovyScriptException("Groovy script is empty");
+        }
+
+        final String scriptCacheKey = Md5Utils.md5Hex(trimmedScript);
+        return this.localCacheManager.getIfPresent(scriptCacheKey);
     }
 
     private GroovyObject parseClassScript(final String classScript) {
