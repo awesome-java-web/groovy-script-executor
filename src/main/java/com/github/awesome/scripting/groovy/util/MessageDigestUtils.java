@@ -4,11 +4,17 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public final class Md5Utils {
+/**
+ * 消息摘要计算工具类，内部实现，减少一些外部依赖。
+ *
+ * @author codeboyzhou
+ * @since 0.1.0
+ */
+public final class MessageDigestUtils {
 
     private static final String MESSAGE_DIGEST_ALGORITHM_MD5 = "MD5";
 
-    private Md5Utils() {
+    private MessageDigestUtils() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 

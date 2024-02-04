@@ -1,6 +1,6 @@
 package com.github.awesome.scripting.groovy
 
-import com.github.awesome.scripting.groovy.util.Md5Utils
+import com.github.awesome.scripting.groovy.util.MessageDigestUtils
 import org.mockito.MockedStatic
 import org.mockito.Mockito
 import spock.lang.Specification
@@ -9,11 +9,11 @@ import spock.lang.Unroll
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class Md5UtilsTest extends Specification {
+class MessageDigestUtilsTest extends Specification {
 
     def "test new constructor"() {
         when:
-        new Md5Utils()
+        new MessageDigestUtils()
 
         then:
         Exception exception = thrown(UnsupportedOperationException)
@@ -27,7 +27,7 @@ class Md5UtilsTest extends Specification {
         mdMock.when(() -> MessageDigest.getInstance(Mockito.anyString())).thenThrow(NoSuchAlgorithmException)
 
         when:
-        byte[] md5 = Md5Utils.md5("hello world")
+        byte[] md5 = MessageDigestUtils.md5("hello world")
 
         then:
         md5.length == 0
@@ -37,7 +37,7 @@ class Md5UtilsTest extends Specification {
     @Unroll
     def "test md5Hex, input = #input, result = #result"() {
         when:
-        String md5Hex = Md5Utils.md5Hex(input)
+        String md5Hex = MessageDigestUtils.md5Hex(input)
 
         then:
         md5Hex == result
