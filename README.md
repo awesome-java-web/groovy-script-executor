@@ -24,7 +24,7 @@ Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执
 <dependency>
     <groupId>io.github.awesome-java-web</groupId>
     <artifactId>groovy-script-executor</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
 </dependency>
 <!----------------- at least one required -----------------
     本地缓存框架，具体根据使用情况，想用哪个框架就引入对应的依赖
@@ -42,4 +42,4 @@ Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执
 </dependency>
 ```
 - 第二步：请参考这段示例代码了解如何使用
-[GroovyScriptExecutorSample](https://github.com/awesome-java-web/groovy-script-executor/blob/0.2.0/src/test/java/com/github/awesome/scripting/groovy/GroovyScriptExecutorSample.java)
+[GroovyScriptExecutorSample](https://github.com/awesome-java-web/groovy-script-executor/blob/0.2.1/src/test/java/com/github/awesome/scripting/groovy/GroovyScriptExecutorSample.java)

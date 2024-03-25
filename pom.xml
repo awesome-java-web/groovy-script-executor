@@ -7,7 +7,7 @@
 
     <groupId>io.github.awesome-java-web</groupId>
     <artifactId>groovy-script-executor</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>groovy-script-executor</name>
@@ -73,6 +73,12 @@
             <groupId>org.kohsuke</groupId>
             <artifactId>groovy-sandbox</artifactId>
             <version>${groovy-sandbox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- local cache framework -->
         <dependency>
