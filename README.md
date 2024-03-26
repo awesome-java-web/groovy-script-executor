@@ -26,9 +26,8 @@ Groovy Script Executor 帮助你轻松实现在 Java 项目里动态解析并执
     <artifactId>groovy-script-executor</artifactId>
     <version>0.2.1-SNAPSHOT</version>
 </dependency>
-<!----------------- at least one required -----------------
+<!---------------------- optional -------------------------
     本地缓存框架，具体根据使用情况，想用哪个框架就引入对应的依赖
-    如果不想自定义缓存框架的配置，默认框架请引入 caffeine 依赖
 ---------------------------------------------------------->
 <dependency>
     <groupId>com.github.ben-manes.caffeine</groupId>

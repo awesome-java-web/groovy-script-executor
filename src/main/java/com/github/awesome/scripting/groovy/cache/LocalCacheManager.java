@@ -1,11 +1,8 @@
 package com.github.awesome.scripting.groovy.cache;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import groovy.lang.GroovyObject;
 
 import javax.annotation.Nonnull;
-import java.time.Duration;
 
 /**
  * 本地缓存管理器，这个类相当于所有缓存框架对外的门面，负责与外部其它类做缓存相关的接口交互。
@@ -48,18 +45,13 @@ public class LocalCacheManager implements LocalCache {
     }
 
     /**
-     * 使用默认的缓存框架(Caffeine)，如果你想使用自定义的缓存框架以及配置，请使用 {@link #use(LocalCache)} 方法
+     * 使用默认的缓存实现，如果你想使用自定义的缓存框架以及配置，请使用 {@link #use(LocalCache)} 方法
      *
      * @return 当前类的实例对象，返回 {@code this} 方便链式调用
      */
     public LocalCacheManager useDefaultCache() {
-        Cache<String, GroovyObject> defaultCache = Caffeine.newBuilder()
-                .initialCapacity(1)
-                .maximumSize(10)
-                .expireAfterAccess(Duration.ofDays(1))
-                .recordStats()
-                .build();
-        localCache = new CaffeineLocalCache(defaultCache);
+        SimpleMemoryLruCache<String, GroovyObject> defaultCache = new SimpleMemoryLruCache<>(10);
+        localCache = new DefaultLocalCache(defaultCache);
         return this;
     }
 
